@@ -1,44 +1,58 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../Shared/Navbar/Navbar";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
 
-const Login = () => {
-    const { signIn } = useContext(AuthContext);
-    const location = useLocation();
-    const navigate = useNavigate();
-    console.log('location in the login page, ', location);
+const Register = () => {
+    const { createUser } = useContext(AuthContext)
 
-    const handleLogin = e => {
+    const handleRegister = e => {
         e.preventDefault();
-        console.log(e.currentTarget);
         const form = new FormData(e.currentTarget);
+        const name = form.get('name');
+        const photo = form.get('photo');
         const email = form.get('email');
         const password = form.get('password');
-        console.log(email, password);
-        //Pa$$w0rd!
-        signIn(email, password)
+        console.log(email, password, name, photo);
+
+        // create user
+        createUser(email, password)
             .then(result => {
                 console.log(result.user);
-                navigate(location?.state ? location.state : '/');
-            })
-            .catch(error => {
+            }).catch(error => {
                 console.error(error);
             })
+
+
     }
+
 
     return (
         <div>
             <Navbar />
-            <form onSubmit={handleLogin} className="mx-auto card-body w-full lg:w-1/2 md:2/3">
-                <h2 className="text-2xl font-bold text-center">Login your account</h2>
+            <form onSubmit={handleRegister} className="mx-auto card-body w-full lg:w-1/2 md:2/3">
+                <h2 className="text-2xl font-bold text-center">Register your account</h2>
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text">Your name</span>
+                    </label>
+                    <input name="name" type="name" placeholder="Enter your name" className="input input-bordered" required />
+                </div>
+
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text">Photo URL</span>
+                    </label>
+                    <input name="photo" type="photo" placeholder="Enter your photo URL" className="input input-bordered" required />
+                </div>
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text">Email</span>
                     </label>
                     <input name="email" type="email" placeholder="Email" className="input input-bordered" required />
                 </div>
+
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text">Password</span>
@@ -49,15 +63,15 @@ const Login = () => {
                     </label>
                 </div>
                 <div className="form-control mt-6">
-                    <button className="btn btn-primary">Login</button>
+                    <button className="btn btn-primary">Register</button>
                 </div>
                 <div>
-                    <p>Do not have an account?
-                        <Link className="pl-2 text-red-600 font-semibold" to='/register'>Register</Link></p>
+                    <p>Already have an account?
+                        <Link className="pl-2 text-red-600 font-semibold" to='/login'>Login</Link></p>
                 </div>
             </form>
         </div>
     );
 };
 
-export default Login;
+export default Register;
